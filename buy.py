@@ -11,7 +11,8 @@ channel1 = connection.channel()
 channel1.queue_declare(queue='buy_queue')
 
 
-def buy(number):
+def buy(ch, method, props, number):
+    number = int(number)
     while number == 0:
         with open('data.txt', 'wr') as f:
             b = -number
