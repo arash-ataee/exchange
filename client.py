@@ -5,15 +5,11 @@ connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='sell_queue', durable=False)
+channel.exchange_declare(exchange='exchange', exchange_type='topic')
 
-message = ' '.join(sys.argv[1:])
+routing_key = sys.argv[1]
+message = ' '.join(sys.argv[2:])
 channel.basic_publish(
-    exchange='',
-    routing_key='sell_queue',
-    body=message,
-    properties=pika.BasicProperties(
-        delivery_mode=2,  # make message persistent
-    ))
-print(" [x] Sent %r" % message)
+    exchange='exchange', routing_key=routing_key, body=message)
+print(" [x] Sent %r:%r" % (routing_key, message))
 connection.close()
